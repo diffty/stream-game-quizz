@@ -1,0 +1,101 @@
+/* line 1, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+body {
+  background-color: green;
+  margin: 0;
+}
+
+/* line 6, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer {
+  display: block;
+  position: absolute;
+  width: 717px;
+  height: 92px;
+  clear: none;
+}
+
+/* line 14, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer.answer-a {
+  top: 864px;
+  left: 220px;
+}
+
+/* line 19, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer.answer-b {
+  top: 864px;
+  left: 954px;
+}
+
+/* line 24, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer.answer-c {
+  top: 971px;
+  left: 220px;
+}
+
+/* line 29, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer.answer-d {
+  top: 971px;
+  left: 954px;
+}
+
+/* line 34, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.question-border {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  -webkit-mask: url("../img/border_question.svg");
+  width: 100%;
+  height: 100%;
+  background: cyan;
+  mask-size: cover;
+  clear: none;
+}
+
+/* line 48, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.question-bg {
+  display: block;
+  -webkit-mask: url("../img/fill_question.svg");
+  width: 100%;
+  height: 100%;
+  background: red;
+  mask-size: cover;
+  clear: none;
+}
+
+/* line 58, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer-border {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  -webkit-mask: url("../img/border_answer.svg");
+  width: 100%;
+  height: 100%;
+  background: cyan;
+  mask-size: cover;
+  clear: none;
+}
+
+/* line 72, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer-bg {
+  display: block;
+  -webkit-mask: url("../img/fill_answer.svg");
+  width: 100%;
+  height: 100%;
+  background: red;
+  mask-size: cover;
+  clear: none;
+}
+
+/* line 82, ../../../Documents/_Projets/Streaming/2021_11_Infusion04_Quizz/CLIENT/css/_sass/overlay.scss */
+.answer-content {
+  font-size: 30px;
+  word-wrap: break-word;
+  margin: 0;
+  padding: 10px 75px 10px 75px;
+  clear: none;
+}
+
+/*# sourceMappingURL=overlay.css.map */

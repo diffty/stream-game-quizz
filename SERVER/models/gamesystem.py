@@ -7,6 +7,8 @@ from models.game import Game
 
 
 class GameSystem(Serializable):
+    _instance = None
+
     def __init__(self):
         self.players = []
         self.game = None
@@ -15,6 +17,11 @@ class GameSystem(Serializable):
             self.load()
         else:
             self.create()
+
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls._instance, cls):
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
 
     def create(self):
         self.players = [Player()]

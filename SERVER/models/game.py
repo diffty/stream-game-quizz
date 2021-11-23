@@ -5,12 +5,14 @@ from question_db import QuestionDb
 
 from .serializable import Serializable
 
+from utils import CustomJSONEncoder
+
 
 class Game(Serializable):
     def __init__(self):
-        creds = auth()
-        self.q_db = QuestionDb(creds, "1ElFCYtnRjMb23gwZGZyBEBNREfsI_LhOEn_HXmpN4DY", 0)
-        self.curr_question_id = -1
+        self._q_db = QuestionDb(auth(), "1ElFCYtnRjMb23gwZGZyBEBNREfsI_LhOEn_HXmpN4DY", 0)
+
+        self.curr_question_id = 0
         self.curr_question_obj = None
         self.selected_answer_number = -1
 
@@ -20,22 +22,23 @@ class Game(Serializable):
         self.is_game_ended = True
         self.is_game_started = False
     
-    def next_question(self):
-        if len(self.q_db.question) <= self.curr_question_id+1:
-            raise Exception("<!!> Trying to access the question after the first one")
-
-        self.set_question(self.curr_question_id+1)
-    
     def prev_question(self):
         if self.curr_question_id-1 < 0:
             raise Exception("<!!> Trying to access the question before the first one")
 
         self.set_question(self.curr_question_id-1)
 
+    def next_question(self):
+        if len(self._q_db.questions) <= self.curr_question_id+1:
+            raise Exception("<!!> Trying to access the question after the first one")
+
+        self.set_question(self.curr_question_id+1)
+    
     def set_question(self, q_id: int):
-        self.curr_question_obj = self.q_db.get_question(self.curr_question_id)
+        self.curr_question_obj = self._q_db.get_question(self.curr_question_id)
         self.curr_question_id = q_id
-        self.on_game_event("question_change")
+        self.on_question_changed()
+        #self.on_game_event("question_change")
 
     def set_answer_selection(self, a_number: int):
         self.selected_answer_number = a_number
@@ -74,14 +77,30 @@ class Game(Serializable):
                 self.is_game_ended = True
                 self.on_game_event("end")
     
+    def on_question_changed(self):
+        event_payload = {
+            "type": "event",
+            "topic": "question_changed",
+            "data": {
+                "question": self.curr_question_obj.question,
+                "answers": self.curr_question_obj.get_answers_list()
+            }
+        }
+
+        import web_api
+
+        for q in web_api.NOTIFICATION_QUEUES:
+            q.put(json.dumps(event_payload))
+    
     def on_game_updated(self):
         event_payload = {
             "type": "game",
             "content": self.to_json(),
         }
 
-        for q in NOTIFICATION_QUEUES:
-            q.put(json.dumps(event_payload))
+        import web_api
+        for q in web_api.NOTIFICATION_QUEUES:
+            q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
     
     def on_timer_event(self, event_type):
         event_payload = {
@@ -90,8 +109,9 @@ class Game(Serializable):
             "game_data": self.to_json(),
         }
 
-        for q in NOTIFICATION_QUEUES:
-            q.put(json.dumps(event_payload))
+        import web_api
+        for q in web_api.NOTIFICATION_QUEUES:
+            q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
     
     def on_game_event(self, event_type):
         event_payload = {
@@ -100,5 +120,6 @@ class Game(Serializable):
             "game_data": self.to_json(),
         }
 
-        for q in NOTIFICATION_QUEUES:
-            q.put(json.dumps(event_payload))
+        import web_api
+        for q in web_api.NOTIFICATION_QUEUES:
+            q.put(json.dumps(event_payload, cls=CustomJSONEncoder))

@@ -23,9 +23,7 @@ function animate(now) {
     then = now;
 
     gameSystem.update(deltaTime);
-
     gameScreen.update(deltaTime);
-    gameScreen.draw(deltaTime);
 
     requestAnimationFrame(animate);
 

@@ -20,6 +20,9 @@ class Question:
 
     def __repr__(self):
         return f"<Question: {self.question} - {' / '.join(self.answers)}>"
+    
+    def to_json(self):
+        return {"question": self.question, "answers": self.get_answers_list()}
 
     @staticmethod
     def create_from_row(row_content):

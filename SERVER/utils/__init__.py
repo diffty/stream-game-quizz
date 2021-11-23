@@ -1,4 +1,5 @@
 import sys
+import json
 
 
 def print_to_console(s):
@@ -27,3 +28,8 @@ def to_json(var):
     
     return res
 
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if not (hasattr(obj, "__class__") and obj.__class__.__name__.startswith("_")):
+            return json.JSONEncoder.default(self, obj)

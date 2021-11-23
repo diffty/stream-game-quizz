@@ -21,34 +21,52 @@ export class GameSystem {
     }
 
     receiveEvent(message) {
-        let data = JSON.parse(message.data);
-        
-        if (data.type == "game") {
-            this.receiveGameUpdate(data.content);
-        }
-        else if (data.type == "player") {
-            this.receivePlayerUpdate(data.content, data.playerId);
-        }
-        else if (data.type == "game_event") {
-            this.receiveGameUpdate(data.game_data);
+        let payload = JSON.parse(message.data);
 
-            if (data.content == "end") {
+        console.log(payload);
+
+        if (payload.type == "event") {
+            if (payload.topic == "answer_visibility") {
+                var elements = document.getElementsByClassName("answer-" + "abcd"[payload.data.answer_num]);
+                var contents = elements[0].getElementsByClassName("answer-content");
+                contents[0].style = payload.data.state == false ? "display: none;" : "";
+            }
+
+            if (payload.topic == "question_changed") {
+                for (var i = 0; i < payload.data.answers.length; i++) {
+                    var elements = document.getElementsByClassName("answer-" + "abcd"[i]);
+                    var contents = elements[0].getElementsByClassName("answer-content");
+                    contents[0].style = "display: none;";
+                    contents[0].textContent = payload.data.answers[i];
+                }
+            }
+        }
+        else if (payload.type == "game") {
+            this.receiveGameUpdate(payload.content);
+        }
+        else if (payload.type == "player") {
+            this.receivePlayerUpdate(payload.content, payload.playerId);
+        }
+        else if (payload.type == "game_event") {
+            this.receiveGameUpdate(payload.game_data);
+
+            if (payload.content == "end") {
 
             }
         }
-        else if (data.type == "timer_event") {
-            this.receiveGameUpdate(data.game_data);
+        else if (payload.type == "timer_event") {
+            this.receiveGameUpdate(payload.game_data);
 
-            if (data.content == "start") {
+            if (payload.content == "start") {
                 this.game.start();
             }
-            else if (data.content == "pause") {
+            else if (payload.content == "pause") {
                 this.game.pause();
             }
-            else if (data.content == "reset") {
+            else if (payload.content == "reset") {
                 this.game.reset();
             }
-            else if (data.content == "set") {
+            else if (payload.content == "set") {
                 
             }
         }
