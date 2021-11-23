@@ -11,6 +11,31 @@ body {
   font-display: swap;
 }
 
+.question-border {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  -webkit-mask: url("../img/border_question.svg");
+  width: 100%;
+  height: 100%;
+  /*background: cyan;*/
+  background: linear-gradient(0.25turn, #e66465, #9198e5);
+  mask-size: cover;
+  clear: none;
+}
+
+.question-bg {
+  display: block;
+  -webkit-mask: url("../img/fill_question.svg");
+  width: 100%;
+  height: 100%;
+  background: red;
+  mask-size: cover;
+  clear: none;
+}
+
 .answer {
   display: block;
   position: absolute;
@@ -39,31 +64,6 @@ body {
   left: 954px;
 }
 
-.question-border {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  float: left;
-  -webkit-mask: url("../img/border_question.svg");
-  width: 100%;
-  height: 100%;
-  /*background: cyan;*/
-  background: linear-gradient(0.25turn, #e66465, #9198e5);
-  mask-size: cover;
-  clear: none;
-}
-
-.question-bg {
-  display: block;
-  -webkit-mask: url("../img/fill_question.svg");
-  width: 100%;
-  height: 100%;
-  background: red;
-  mask-size: cover;
-  clear: none;
-}
-
 .answer-border {
   display: block;
   position: absolute;
@@ -76,17 +76,17 @@ body {
   background: black;
   mask-size: cover;
   clear: none;
-  opacity: 0.9;
+  /*opacity: 0.9;*/
 }
 
 .answer-a .answer-border,
 .answer-c .answer-border {
-  background: linear-gradient(0.25turn, #00427c, #cfe9ff);
+  background: linear-gradient(0.25turn, #00427c, #C0E2ED);
 }
 
 .answer-b .answer-border,
 .answer-d .answer-border {
-  background: linear-gradient(0.75turn, #00427c, #cfe9ff);
+  background: linear-gradient(0.75turn, #00427c, #C0E2ED);
 }
 
 .answer-bg {
@@ -117,4 +117,8 @@ body {
 .answer-diamond {
   font-size: 40px;
   vertical-align: 10%;
+}
+
+#horizontal-lines line {
+  stroke-width: 8px;
 }

@@ -9,6 +9,19 @@
         <script src="js/index.js" type="module"></script>
     </head>
     <body>
+        <svg id="horizontal-lines" width="1920" height="1080">
+            <defs>
+                <linearGradient id="e" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#002546" />
+                    <stop offset="10%" stop-color="#00427c" />
+                    <stop offset="50%" stop-color="#C0E2ED" />
+                    <stop offset="90%" stop-color="#00427c" />
+                    <stop offset="100%" stop-color="#002546" />
+                </linearGradient>
+            </defs>
+            <line x1="0" y1="910"  x2="1920" y2="910" stroke="url(#e)"></line>
+            <line x1="0" y1="1011" x2="1920" y2="1011" stroke="url(#e)"></line>
+        </svg>
         <div class="answer answer-a">
             <div class="answer-bg">
                 <span class="answer-content">
