@@ -35,8 +35,8 @@ export class GameSystem {
             if (payload.topic == "question_changed") {
                 for (var i = 0; i < payload.data.answers.length; i++) {
                     var elements = document.getElementsByClassName("answer-" + "abcd"[i]);
-                    var contents = elements[0].getElementsByClassName("answer-content");
-                    contents[0].style = "display: none;";
+                    var contents = elements[0].getElementsByClassName("answer-text");
+                    //contents[0].style = "display: none;";
                     contents[0].textContent = payload.data.answers[i];
                 }
             }
