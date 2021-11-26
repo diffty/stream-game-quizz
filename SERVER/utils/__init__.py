@@ -31,5 +31,7 @@ def to_json(var):
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
-        if not (hasattr(obj, "__class__") and obj.__class__.__name__.startswith("_")):
+        if hasattr(obj, "to_json"):
+            return obj.to_json()
+        elif not (hasattr(obj, "__class__") and obj.__class__.__name__.startswith("_")):
             return json.JSONEncoder.default(self, obj)
