@@ -46,6 +46,7 @@ class Bot(commands.Bot):
                          initial_channels=['diffty'])
 
         self.game_system = GameSystem()
+        self.leaderboard = Leaderboard()
         
     async def event_ready(self):
         print(f'Logged in as | {self.nick}')
@@ -68,6 +69,11 @@ class Bot(commands.Bot):
 
     def receive_answer(self, user_name, message_content):
         answer = self.search_for_answers(message_content)
+
+        if answer:
+            self.leaderboard.receive_answer(self.game_system.game.curr_question_id,
+                                            user_name,
+                                            answer)
     
     @staticmethod
     def search_for_answers(message_content):
