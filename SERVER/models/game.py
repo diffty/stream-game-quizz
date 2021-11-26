@@ -14,13 +14,19 @@ class Game(Serializable):
 
         self.curr_question_id = 0
         self.curr_question_obj = None
-        self.selected_answer_number = -1
+        self.selected_answer_num = -1
+
+        self.answers_visibility = []
+        self.default_answer_visibility = False
 
         self.curr_question_time = 0
         self.max_question_time = 30
         self.is_timer_active = False
         self.is_game_ended = True
         self.is_game_started = False
+
+        if self.curr_question_obj is None:
+            self.set_question(0)
     
     def prev_question(self):
         if self.curr_question_id-1 < 0:
@@ -35,24 +41,32 @@ class Game(Serializable):
         self.set_question(self.curr_question_id+1)
     
     def set_question(self, q_id: int):
-        self.curr_question_obj = self._q_db.get_question(self.curr_question_id)
         self.curr_question_id = q_id
-        self.on_question_changed()
-        #self.on_game_event("question_change")
+        self.curr_question_obj = self._q_db.get_question(self.curr_question_id)
+        self.selected_answer_num = -1
+        self.answers_visibility = [self.default_answer_visibility] * len(self.curr_question_obj.answers)
+        self.on_game_updated()
+        print(f"{self.curr_question_obj.get_answers_list()=}")
+        print(f"{q_id=}")
 
-    def set_answer_selection(self, a_number: int):
-        self.selected_answer_number = a_number
-        self.on_game_event("answer_selection")
+    def set_answer_visibility(self, answer_num: int, new_visibility: bool):
+        self.answers_visibility[answer_num] = new_visibility
+        self.on_game_updated()
+        
+    def set_answer_selection(self, answer_num: int):
+        if (answer_num == -1 or self.answers_visibility[answer_num]):
+            self.selected_answer_num = answer_num
+            self.on_game_updated()
     
     def clear_answer_selection(self):
-        self.selected_answer_number = -1
+        self.selected_answer_num = -1
         self.on_game_event("answer_selection")
 
     def show_solution(self):
-        self.on_game_event("show_solution")
+        self.emit_event("gamescreen", "show_solution", self.curr_question_obj.get_correct_answer_num())
 
     def hide_solution(self):
-        self.on_game_event("hide_solution")
+        self.emit_event("gamescreen", "hide_solution")
     
     def start_timer(self):
         self.is_timer_active = True
@@ -79,47 +93,40 @@ class Game(Serializable):
     
     def on_question_changed(self):
         event_payload = {
-            "type": "event",
-            "topic": "question_changed",
+            "receiver": "game",
+            "type": "data",
             "data": {
-                "question": self.curr_question_obj.question,
-                "answers": self.curr_question_obj.get_answers_list()
+                "curr_question_obj": self.curr_question_obj
             }
         }
 
         import web_api
 
         for q in web_api.NOTIFICATION_QUEUES:
-            q.put(json.dumps(event_payload))
+            q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
     
     def on_game_updated(self):
         event_payload = {
-            "type": "game",
-            "content": self.to_json(),
+            "receiver": "game",
+            "type": "data",
+            "data": self.to_json(),
         }
 
         import web_api
         for q in web_api.NOTIFICATION_QUEUES:
             q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
-    
-    def on_timer_event(self, event_type):
+
+    def emit_event(self, receiver, topic, data=None):
         event_payload = {
-            "type": "timer_event",
-            "content": event_type,
-            "game_data": self.to_json(),
+            "receiver": receiver,
+            "type": "event",
+            "topic": topic,
+            "data": data,
         }
 
         import web_api
         for q in web_api.NOTIFICATION_QUEUES:
             q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
-    
-    def on_game_event(self, event_type):
-        event_payload = {
-            "type": "game_event",
-            "content": event_type,
-            "game_data": self.to_json(),
-        }
 
-        import web_api
-        for q in web_api.NOTIFICATION_QUEUES:
-            q.put(json.dumps(event_payload, cls=CustomJSONEncoder))
+    def on_game_event(self, topic, data=None):
+        self.emit_event("game", topic, data)

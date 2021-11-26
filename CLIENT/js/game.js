@@ -1,9 +1,19 @@
+import { EventSystem } from './eventsystem.js';
+
+
 export class Game {
     constructor() {
-        this.alarm = false;
-        this.currTime = 0;
-        this.maxTime = 3600;
-        this.maxOxygen = 75;
+        EventSystem.connect("game_message_received", (payload) => { this.receiveMessage(payload) });
+
+        this.curr_question_id = 0;
+        this.curr_question_obj = null;
+        this.selected_answer_num = -1;
+        
+        this.answers_visibility = []
+        
+        this.curr_question_time = 0;
+        this.max_question_time = 30;
+
         this.isTimerActive = false;
         this.isGameEnded = true;
         this.isGameStarted = false;
@@ -27,11 +37,29 @@ export class Game {
         }
     }
 
+    receiveMessage(payload) {
+        if (payload.receiver == "game") {
+            if (payload.type == "event") {
+                this.receiveEvent(payload);
+            }
+            else if (payload.type == "data") {
+                this.receiveUpdate(payload.data);
+            }
+        }
+    }
+
+    receiveEvent(payload) {
+        if (payload.topic == "question_changed") {
+
+        }
+    }
+
     receiveUpdate(data) {
         for (let k in data) {
             if (k in this) {
                 this[k] = data[k];
             }
         }
+        EventSystem.emit("game_updated");
     }
 }

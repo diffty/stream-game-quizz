@@ -1,5 +1,6 @@
-import { GameSystem } from './gamesystem.js'
 import { CONFIG } from '../config.js'
+
+import { GameSystem } from './gamesystem.js'
 
 
 var gameSystem = new GameSystem();

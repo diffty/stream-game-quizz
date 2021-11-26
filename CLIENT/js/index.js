@@ -1,19 +1,21 @@
-import { GameScreen } from './gamescreen.js'
-import { GameSystem } from './gamesystem.js'
 import { CONFIG } from '../config.js'
 
+import { GameScreen } from './gamescreen.js'
+import { GameSystem } from './gamesystem.js'
+import { EventSystem } from './eventsystem.js';
 
-// VARS
+
 let then = 0;
 
 var gameSystem = new GameSystem();
-var gameScreen = new GameScreen(gameSystem);
-
+var gameScreen = new GameScreen(gameSystem.game);
 
 let eventSource = new EventSource(`http://${CONFIG.host}:${CONFIG.port}/notifications_stream`);
 
 eventSource.onmessage = (message) => {
-    gameSystem.receiveEvent(message);
+    let payload = JSON.parse(message.data);
+    console.log(payload);
+    EventSystem.emit(`${payload.receiver}_message_received`, payload)
 };
 
 function animate(now) {

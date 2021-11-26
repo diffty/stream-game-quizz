@@ -42,11 +42,16 @@ class AnswerWidget(QWidget):
 
 
 class ControllerGUI(QMainWindow):
+    question_changed = Signal(int)
     answer_visibility_changed = Signal(int, bool)
     answer_selected = Signal(int)
+    answer_cleared = Signal()
+    reveal_answer = Signal()
 
     def __init__(self):
         QMainWindow.__init__(self)
+
+        self.resize(1000, 100)
 
         self.game_system = GameSystem()
         
@@ -71,7 +76,12 @@ class ControllerGUI(QMainWindow):
         main_layout.addLayout(answers_layout)
 
         reveal_answer_btn = QPushButton(text="Reveal Answer")
+        reveal_answer_btn.clicked.connect(self.reveal_answer)
         main_layout.addWidget(reveal_answer_btn)
+
+        clear_answer_btn = QPushButton(text="Clear Answer")
+        clear_answer_btn.clicked.connect(self.on_clear_answer)
+        main_layout.addWidget(clear_answer_btn)
 
         switch_question_layout = QHBoxLayout()
         prev_question_btn = QPushButton(text="<--")
@@ -88,18 +98,26 @@ class ControllerGUI(QMainWindow):
         main_widget.setLayout(main_layout)
 
         self.setCentralWidget(main_widget)
+
+        self.refresh_ui()
     
     def on_prev_question(self):
         self.game_system.game.prev_question()
         self.refresh_ui()
+        self.question_changed.emit(self.game_system.game.curr_question_id)
 
     def on_next_question(self):
         self.game_system.game.next_question()
         self.refresh_ui()
+        self.question_changed.emit(self.game_system.game.curr_question_id)
     
+    def on_clear_answer(self):
+        self.answer_selected.emit(-1)
+
     def refresh_ui(self):
         self.question_field.setText(self.game_system.game.curr_question_obj.question)
 
         answers_list = self.game_system.game.curr_question_obj.get_answers_list()
         for i, a_widget in enumerate(self.answer_widget_list):
             a_widget.set_answer_text(answers_list[i] if i < len(answers_list) else "")
+            a_widget.answer_checkbox.setChecked(self.game_system.game.answers_visibility[i])

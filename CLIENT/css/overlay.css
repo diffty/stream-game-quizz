@@ -5,10 +5,20 @@ body {
 @font-face {
   font-family: 'Conduit ITC';
   src: url('../fonts/ConduitITC-Bold.woff2') format('woff2'),
-      url('../fonts/ConduitITC-Bold.woff') format('woff');
+       url('../fonts/ConduitITC-Bold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
+}
+
+.question {
+  display: block;
+  position: absolute;
+  top: 696px;
+  left: 143px;
+  width: 1610px;
+  height: 154px;
+  clear: none;
 }
 
 .question-border {
@@ -21,17 +31,48 @@ body {
   width: 100%;
   height: 100%;
   /*background: cyan;*/
-  background: linear-gradient(0.25turn, #e66465, #9198e5);
+  background: linear-gradient(0.25turn, #00427c, #C0E2ED, #00427c);
   mask-size: cover;
   clear: none;
+}
+
+.question-content {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-family: "Conduit ITC";
+  font-weight: bold;
+  font-size: 56px;
+  color: white;
+  word-wrap: break-word;
+  padding: 10px 100px 10px 100px;
+  clear: none;
+  line-height: 75%;
+}
+
+.answer-content {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-family: "Conduit ITC";
+  font-weight: bold;
+  font-size: 40px;
+  color: white;
+  word-wrap: break-word;
+  padding: 10px 50px 10px 120px;
+  clear: none;
+  line-height: 80%;
+  text-indent: -71px;
 }
 
 .question-bg {
   display: block;
   -webkit-mask: url("../img/fill_question.svg");
+  background: black;
   width: 100%;
   height: 100%;
-  background: red;
   mask-size: cover;
   clear: none;
 }
@@ -42,6 +83,43 @@ body {
   width: 717px;
   height: 92px;
   clear: none;
+}
+
+.answer-border {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  float: left;
+  -webkit-mask: url("../img/border_answer.svg");
+  width: 100%;
+  height: 100%;
+  background: black;
+  mask-size: cover;
+  clear: none;
+  /*opacity: 0.9;*/
+}
+
+.answer-bg {
+  display: block;
+  -webkit-mask: url("../img/fill_answer.svg");
+  width: 100%;
+  height: 100%;
+  background: black;
+  mask-size: cover;
+  clear: none;
+}
+
+.answer-head {
+  color: orange;
+}
+
+.answer-diamond {
+  font-size: 40px;
+}
+
+#horizontal-lines line {
+  stroke-width: 8px;
 }
 
 .answer.answer-a {
@@ -64,21 +142,6 @@ body {
   left: 954px;
 }
 
-.answer-border {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  float: left;
-  -webkit-mask: url("../img/border_answer.svg");
-  width: 100%;
-  height: 100%;
-  background: black;
-  mask-size: cover;
-  clear: none;
-  /*opacity: 0.9;*/
-}
-
 .answer-a .answer-border,
 .answer-c .answer-border {
   background: linear-gradient(0.25turn, #00427c, #C0E2ED);
@@ -87,38 +150,4 @@ body {
 .answer-b .answer-border,
 .answer-d .answer-border {
   background: linear-gradient(0.75turn, #00427c, #C0E2ED);
-}
-
-.answer-bg {
-  display: block;
-  -webkit-mask: url("../img/fill_answer.svg");
-  width: 100%;
-  height: 100%;
-  background: black;
-  mask-size: cover;
-  clear: none;
-}
-
-.answer-content {
-  font-family: "Conduit ITC";
-  font-weight: bold;
-  font-size: 60px;
-  color: white;
-  word-wrap: break-word;
-  margin: 0;
-  padding: 10px 75px 10px 75px;
-  clear: none;
-}
-
-.answer-head {
-  color: orange;
-}
-
-.answer-diamond {
-  font-size: 40px;
-  vertical-align: 10%;
-}
-
-#horizontal-lines line {
-  stroke-width: 8px;
 }

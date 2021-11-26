@@ -1,5 +1,8 @@
+import { CONFIG } from '../config.js'
+
 import { Player } from './player.js'
 import { Game } from './game.js'
+import { EventSystem } from './eventsystem.js'
 
 
 export class GameSystem {
@@ -8,6 +11,10 @@ export class GameSystem {
         this.game = new Game();
         this.eventsLog = [];
         this.adminMode = false;
+        
+        EventSystem.connect("gamesystem_message_received", (payload) => { this.receiveMessage(payload) });
+
+        this.retrieveUpdate();
     }
 
     createPlayers(numPlayers) {
@@ -20,59 +27,30 @@ export class GameSystem {
         this.game.update(deltaTime);
     }
 
-    receiveEvent(message) {
-        let payload = JSON.parse(message.data);
+    retrieveUpdate() {
+        $.ajax({
+            url: `http://${CONFIG.host}:${CONFIG.port}/getSystem`
+        }).then((data) => {
+            this.receiveUpdate(data)
+        });
+    }
 
-        console.log(payload);
-
-        if (payload.type == "event") {
-            if (payload.topic == "answer_visibility") {
-                var elements = document.getElementsByClassName("answer-" + "abcd"[payload.data.answer_num]);
-                var contents = elements[0].getElementsByClassName("answer-content");
-                contents[0].style = payload.data.state == false ? "display: none;" : "";
+    receiveMessage(payload) {
+        if (payload.receiver == "gamesystem") {
+            if (payload.type == "event") {
+                this.receiveEvent(payload)
             }
-
-            if (payload.topic == "question_changed") {
-                for (var i = 0; i < payload.data.answers.length; i++) {
-                    var elements = document.getElementsByClassName("answer-" + "abcd"[i]);
-                    var contents = elements[0].getElementsByClassName("answer-text");
-                    //contents[0].style = "display: none;";
-                    contents[0].textContent = payload.data.answers[i];
-                }
-            }
-        }
-        else if (payload.type == "game") {
-            this.receiveGameUpdate(payload.content);
-        }
-        else if (payload.type == "player") {
-            this.receivePlayerUpdate(payload.content, payload.playerId);
-        }
-        else if (payload.type == "game_event") {
-            this.receiveGameUpdate(payload.game_data);
-
-            if (payload.content == "end") {
-
-            }
-        }
-        else if (payload.type == "timer_event") {
-            this.receiveGameUpdate(payload.game_data);
-
-            if (payload.content == "start") {
-                this.game.start();
-            }
-            else if (payload.content == "pause") {
-                this.game.pause();
-            }
-            else if (payload.content == "reset") {
-                this.game.reset();
-            }
-            else if (payload.content == "set") {
-                
+            else if (payload.type == "data") {
+                this.receiveUpdate(payload.data);
             }
         }
     }
 
-    receiveSystemUpdate(data) {
+    receiveEvent(payload) {
+
+    }
+
+    receiveUpdate(data) {
         this.players = []
 
         for (let p in data.players) {
@@ -82,10 +60,6 @@ export class GameSystem {
         }
 
         this.game.receiveUpdate(data.game);
-    }
-
-    receiveGameUpdate(data) {
-        this.game.receiveUpdate(data);
     }
 
     receivePlayerUpdate(data, playerNum) {

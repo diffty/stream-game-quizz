@@ -12,6 +12,13 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Python : main.py",
+            "type": "python",
+            "request": "launch",
+            "program": "SERVER/main.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python : Flask",
             "type": "python",
             "request": "launch",

@@ -8,15 +8,20 @@ class Question:
     def __init__(self, question, answers, correct_answer=0) -> None:
         self.question = question
         self.answers = answers
-        self.correct_answer = correct_answer
-        self.answers_order = list(range(len(answers)))
+
+        self._correct_answer = correct_answer
+        self._answers_order = list(range(len(answers)))
+
         self.shuffle_answers()
 
     def shuffle_answers(self):
-        random.shuffle(self.answers_order)
+        random.shuffle(self._answers_order)
     
     def get_answers_list(self):
-        return list(map(lambda i: self.answers[i], self.answers_order))
+        return list(map(lambda i: self.answers[i], self._answers_order))
+    
+    def get_correct_answer_num(self):
+        return self._answers_order[self._correct_answer]
 
     def __repr__(self):
         return f"<Question: {self.question} - {' / '.join(self.answers)}>"
@@ -41,12 +46,11 @@ class QuestionDb:
         self.refresh()
     
     def refresh(self):
-        self.questions = list(map(lambda r: Question.create_from_row(r), get_info(self.creds,
-                                                                                  self.spreadsheet_id,
-                                                                                  self.sheet_id,
-                                                                                  "A2:E300")))
+        gsheet_content = list(filter(lambda row: len(row) >= 2,
+                                     get_info(self.creds, self.spreadsheet_id, self.sheet_id, "A2:E300")))
+        self.questions = list(map(lambda r: Question.create_from_row(r), gsheet_content))
     
-    def get_question(self, id):
+    def get_question(self, id) -> Question:
         if id < 0 or id >= len(self.questions):
             raise Exception(f"<!!> Question id {id} is invalid (out of range)")
 
