@@ -2,45 +2,33 @@ import os
 import json
 
 from models.serializable import Serializable
-from models.player import Player
 from models.game import Game
+from utils import singleton
 
-
+@singleton
 class GameSystem(Serializable):
-    _instance = None
-
     def __init__(self):
-        self.players = []
+        print("INIT GAMESYSTEM")
         self.game = None
     
-        if os.path.exists("game_state.json"):
-            self.load()
-        else:
-            self.create()
-
-    def __new__(cls, *args, **kwargs):
-        if not isinstance(cls._instance, cls):
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+        #f os.path.exists("game_state.json"):
+        #   self.load()
+        #lse:
+        #   self.create()
+        self.create()
 
     def create(self):
-        self.players = [Player()]
-        self.game = Game()
-    
+        self.game = Game(self)
+
     def load(self):
         game_state = json.load(open("game_state.json", "r"))
 
-        for p in game_state["players"]:
-            new_player = Player()
-            new_player.__dict__.update(p)
-
-            self.players.append(new_player)
-        
-        self.game = Game()
-        self.game.__dict__.update(game_state["game"])
+        print(f"{game_state=}")
+        self.game = Game(self)
+        self.game.from_json(game_state["game"])
     
     def save(self):
-        json.load(self.to_json(), open("game_state.json", "w"))
+        json.dump(self.to_json(), open("game_state.json", "w"), indent=4)
 
     def update(self, delta_time):
         self.game.update(delta_time)

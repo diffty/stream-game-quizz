@@ -1,10 +1,33 @@
+from typing import List
+
 from models.gamesystem import GameSystem
 
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QGridLayout
 from PySide6.QtWidgets import QWidget, QPushButton, QLineEdit, QCheckBox
+from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 
 from PySide6.QtCore import Signal
+
+from models.leaderboard import Player
+
+
+class PlayerListItem(QTreeWidgetItem):
+    def __init__(self, player_obj):
+        QTreeWidgetItem.__init__(self, [player_obj.name, str(player_obj.level), str(player_obj.score)])
+        self.player_obj = player_obj
+
+
+class PlayerList(QTreeWidget):
+    def __init__(self):
+        QTreeWidget.__init__(self)
+        self.setColumnCount(3)
+        self.setHeaderLabels(["Name", "Level", "Score"])
+    
+    def update(self, players: List[Player]):
+        self.clear()
+        for player_obj in players.values():
+            self.addTopLevelItem(PlayerListItem(player_obj))
 
 
 class AnswerWidget(QWidget):
@@ -48,12 +71,13 @@ class ControllerGUI(QMainWindow):
     answer_cleared = Signal()
     reveal_answer = Signal()
 
-    def __init__(self):
+    def __init__(self, game_system: GameSystem):
         QMainWindow.__init__(self)
 
-        self.resize(1000, 100)
+        self.setWindowTitle("Qui Veut Manier des Galions - Control Panel")
+        self.resize(1000, 700)
 
-        self.game_system = GameSystem()
+        self.game_system = game_system
         
         main_widget = QWidget()
 
@@ -84,16 +108,22 @@ class ControllerGUI(QMainWindow):
         main_layout.addWidget(clear_answer_btn)
 
         switch_question_layout = QHBoxLayout()
+
         prev_question_btn = QPushButton(text="<--")
         next_question_btn = QPushButton(text="-->")
-        switch_question_layout.addWidget(prev_question_btn)
-        switch_question_layout.addWidget(next_question_btn)
-        main_layout.addLayout(switch_question_layout)
-
         prev_question_btn.clicked.connect(self.on_prev_question)
         next_question_btn.clicked.connect(self.on_next_question)
+        switch_question_layout.addWidget(prev_question_btn)
+        switch_question_layout.addWidget(next_question_btn)
 
-        main_layout.addStretch()
+        main_layout.addLayout(switch_question_layout)
+
+        self.player_list_widget = PlayerList()
+        main_layout.addWidget(self.player_list_widget)
+
+        recalculate_score_btn = QPushButton(text="Recalculate Scores")
+        recalculate_score_btn.clicked.connect(self.on_recalculate_scores)
+        main_layout.addWidget(recalculate_score_btn)
 
         main_widget.setLayout(main_layout)
 
@@ -113,11 +143,19 @@ class ControllerGUI(QMainWindow):
     
     def on_clear_answer(self):
         self.answer_selected.emit(-1)
+    
+    def on_recalculate_scores(self):
+        self.game_system.game.leaderboard.recalculate_scores(self.game_system.game.curr_question_id)
+
+    def leaderboard_update(self):
+        self.player_list_widget.update(self.game_system.game.leaderboard.players)
 
     def refresh_ui(self):
-        self.question_field.setText(self.game_system.game.curr_question_obj.question)
+        self.question_field.setText(self.game_system.game._curr_question_obj.question)
 
-        answers_list = self.game_system.game.curr_question_obj.get_answers_list()
+        answers_list = self.game_system.game._curr_question_obj.get_answers_list()
         for i, a_widget in enumerate(self.answer_widget_list):
             a_widget.set_answer_text(answers_list[i] if i < len(answers_list) else "")
             a_widget.answer_checkbox.setChecked(self.game_system.game.answers_visibility[i])
+
+        self.leaderboard_update()

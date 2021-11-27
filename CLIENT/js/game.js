@@ -6,7 +6,8 @@ export class Game {
         EventSystem.connect("game_message_received", (payload) => { this.receiveMessage(payload) });
 
         this.curr_question_id = 0;
-        this.curr_question_obj = null;
+        this.curr_question_data = {};
+        this._curr_question_obj = null;
         this.selected_answer_num = -1;
         
         this.answers_visibility = []

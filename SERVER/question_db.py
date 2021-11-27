@@ -3,8 +3,10 @@ import random
 
 from gsheet_interface import get_info, auth
 
+from models.serializable import Serializable
 
-class Question:
+
+class Question(Serializable):
     def __init__(self, question, answers, correct_answer=0) -> None:
         self.question = question
         self.answers = answers
@@ -22,6 +24,9 @@ class Question:
     
     def get_correct_answer_num(self):
         return self._answers_order[self._correct_answer]
+    
+    def shuffled_answer_letter_to_id(self, answer_letter: str):
+        return self._answers_order[ord(answer_letter.upper())-65]
 
     def __repr__(self):
         return f"<Question: {self.question} - {' / '.join(self.answers)}>"

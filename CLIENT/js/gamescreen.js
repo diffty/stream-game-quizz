@@ -114,11 +114,12 @@ export class GameScreen {
     }
 
     onGameUpdate() {
-        if (this.game.curr_question_obj) {
-            this.setQuestionContent(this.game.curr_question_obj.question);
+        console.log(this.game.curr_question_data);
+        if (this.game.curr_question_data) {
+            this.setQuestionContent(this.game.curr_question_data.question);
 
-            for (var i = 0; i < this.game.curr_question_obj.answers.length; i++) {
-                this.setAnswerContent(i, this.game.curr_question_obj.answers[i]);
+            for (var i = 0; i < this.game.curr_question_data.answers.length; i++) {
+                this.setAnswerContent(i, this.game.curr_question_data.answers[i]);
                 this.setAnswerVisibility(i, this.game.answers_visibility[i]);
                 this.setAnswerSelected(i, i == this.game.selected_answer_num);
             }

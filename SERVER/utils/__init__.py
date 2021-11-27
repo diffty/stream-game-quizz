@@ -35,3 +35,12 @@ class CustomJSONEncoder(json.JSONEncoder):
             return obj.to_json()
         elif not (hasattr(obj, "__class__") and obj.__class__.__name__.startswith("_")):
             return json.JSONEncoder.default(self, obj)
+
+
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance

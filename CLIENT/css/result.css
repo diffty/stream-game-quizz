@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'Conduit ITC';
+    src: url('../fonts/ConduitITC-Bold.woff2') format('woff2'),
+         url('../fonts/ConduitITC-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    
+}
+
+.result {
+    display: block;
+    position: absolute;
+    top: 810px;
+    left: 420px;
+    width: 1000px;
+    height: 150px;
+}
+
+.result-border {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    float: left;
+    -webkit-mask: url("../img/border_result.svg");
+    width: 100%;
+    height: 100%;
+    /*background: cyan;*/
+    background: linear-gradient(0.25turn, #00427c, #C0E2ED, #00427c);
+    mask-size: cover;
+    clear: none;
+}
+
+.result-content {
+    word-wrap: break-word;
+    padding: 10px 50px 10px 50px;
+    font-family: "Conduit ITC";
+    font-weight: bold;
+    font-size: 100px;
+    color: orange;
+    text-align: center;
+}
