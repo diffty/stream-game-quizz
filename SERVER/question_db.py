@@ -23,7 +23,11 @@ class Question(Serializable):
         return list(map(lambda i: self.answers[i], self._answers_order))
     
     def get_correct_answer_num(self):
-        return self._answers_order[self._correct_answer]
+        for i, o in enumerate(self._answers_order):
+            if o == 0:
+                return i
+
+        raise Exception("<!!> Failed get_correct_answer_num")
     
     def shuffled_answer_letter_to_id(self, answer_letter: str):
         return self._answers_order[ord(answer_letter.upper())-65]

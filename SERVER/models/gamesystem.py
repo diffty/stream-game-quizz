@@ -11,11 +11,10 @@ class GameSystem(Serializable):
         print("INIT GAMESYSTEM")
         self.game = None
     
-        #f os.path.exists("game_state.json"):
-        #   self.load()
-        #lse:
-        #   self.create()
-        self.create()
+        if os.path.exists("game_state.json"):
+            self.load()
+        else:
+            self.create()
 
     def create(self):
         self.game = Game(self)

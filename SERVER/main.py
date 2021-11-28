@@ -18,6 +18,9 @@ from flask import Flask
 from twitchio.ext import commands
 
 
+TWITCH_CHANNEL = "infusion_inc_"
+
+
 # Define web API QThread
 class FlaskApplicationThread(QThread):
     def __init__(self, app: Flask, port: int = 5000):
@@ -44,7 +47,7 @@ class Bot(commands.Bot):
     def __init__(self, game_system: GameSystem):
         super().__init__(token='f2zdd226wyugv6luydhkjcvc47wmd5',
                          prefix='!',
-                         initial_channels=['diffty'])
+                         initial_channels=[TWITCH_CHANNEL])
 
         self.game_system = game_system
         
@@ -88,11 +91,11 @@ class Bot(commands.Bot):
 
     async def say_question(self):
         question = self.game_system.game._curr_question_obj.question
-        await bot.get_channel("diffty").send(f"Question : {question}")
+        await bot.get_channel(TWITCH_CHANNEL).send(f"Question : {question}")
         
     async def say_answer(self, answer_num: int):
         answers = self.game_system.game._curr_question_obj.get_answers_list()
-        await bot.get_channel("diffty").send(f"Réponse {'ABCD'[answer_num]} : {answers[answer_num]}")
+        await bot.get_channel(TWITCH_CHANNEL).send(f"Réponse {'ABCD'[answer_num]} : {answers[answer_num]}")
 
 
 if __name__ == "__main__":
